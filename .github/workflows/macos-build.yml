@@ -52,8 +52,11 @@ jobs:
             -DWITH_APP_BUNDLE=ON \
             -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \
             -DVCPKG_TARGET_TRIPLET=x64-osx-dynamic-release \
+            -DCMAKE_PREFIX_PATH=$(brew --prefix qt5)/lib/cmake \
             ..
           make -j$(sysctl -n hw.ncpu)
+        env:
+          ASAN_OPTIONS: detect_leaks=0
 
       - name: Package KeePassXC DMG
         run: |
