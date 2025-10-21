@@ -1,0 +1,46 @@
+name: Build KeePassXC for macOS (Release)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    name: Build KeePassXC macOS Release
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install build toolchain
+        run: |
+          xcode-select --install || true
+          brew update
+          brew install cmake asciidoctor
+
+      - name: Install build dependencies
+        run: |
+          brew install qt@5 argon2 botan qrencode readline minizip
+
+      - name: Configure and build KeePassXC
+        run: |
+          mkdir build
+          cd build
+          cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DWITH_XC_ALL=ON \
+            -DWITH_APP_BUNDLE=ON \
+            ..
+          make -j$(sysctl -n hw.ncpu)
+
+      - name: Package KeePassXC DMG
+        run: |
+          cd build
+          make package
+
+      - name: Upload KeePassXC macOS release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KeePassXC-macOS
+          path: build/*.dmg
