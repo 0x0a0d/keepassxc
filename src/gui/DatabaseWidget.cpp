@@ -555,6 +555,12 @@ void DatabaseWidget::copyTotp()
     if (!currentEntry) {
         return;
     }
+
+    // If the entry has no TOTP set, open the setup dialog first
+    if (!currentEntry->hasTotp()) {
+        setupTotp();
+    }
+
     setClipboardTextAndMinimize(currentEntry->totp());
 }
 
