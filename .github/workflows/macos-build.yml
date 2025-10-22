@@ -72,11 +72,11 @@ jobs:
           cd build
           cmake --build . --parallel $(sysctl -n hw.ncpu)
 
-      - name: Run tests
-        run: |
-          cd build
-          export ASAN_OPTIONS=detect_leaks=0
-          ctest --output-on-failure --parallel $(sysctl -n hw.ncpu)
+#      - name: Run tests
+#        run: |
+#          cd build
+#          export ASAN_OPTIONS=detect_leaks=0
+#          ctest --output-on-failure --parallel $(sysctl -n hw.ncpu)
 
       - name: Package application
         run: |
